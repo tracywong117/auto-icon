@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500&display=swap');
+
+:root {
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-end: #1e293b;
+  --panel-bg: rgba(255, 255, 255, 0.03);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-color: #3b82f6;
+  --accent-hover: #2563eb;
+  --canvas-bg: #ffffff; /* We strictly want pure white for high contrast SVG visibility as requested */
+  --error: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow-x: hidden;
+}
+
+/* Base Layout & Glassmorphism */
+.app-container {
+  width: 100%;
+  max-width: 900px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--panel-border);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Typography */
+.title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-top: -1.5rem;
+}
+
+/* Input Form */
+.input-group {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+}
+
+.stamp-input {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.stamp-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.stamp-input::placeholder {
+  color: #475569;
+}
+
+.generate-btn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px var(--accent-color);
+}
+
+.generate-btn:disabled {
+  background: #334155;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Workspace Canvas & Controls */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  margin-top: 1rem;
+  align-items: stretch;
+}
+
+.canvas-wrapper {
+  background: #000;
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--panel-border);
+}
+
+.canvas-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--canvas-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.05); /* very subtle depth on white */
+}
+
+/* Make sure SVG fills the container logically but respects scaling */
+.svg-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* SVG path nodes will inherit fill organically */
+}
+
+.svg-display svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.svg-display svg path {
+   fill: currentColor;
+}
+
+.canvas-placeholder {
+  color: #cbd5e1;
+  font-family: 'Outfit', sans-serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Controls Panel */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid var(--panel-border);
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Color Picker */
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+}
+
+.color-input {
+  -webkit-appearance: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: transparent;
+}
+.color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.color-input::-webkit-color-swatch {
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+}
+
+.color-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.color-hex {
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+/* Range Input styling */
+.range-input {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+  margin-top: 0.5rem;
+}
+
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  transition: transform 0.1s;
+}
+
+.range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.range-input:disabled::-webkit-slider-thumb {
+  background: #64748b;
+  cursor: not-allowed;
+}
+
+/* Export Button */
+.export-btn {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Outfit', sans-serif;
+}
+
+.export-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px #10b981;
+}
+
+.export-btn:disabled {
+  background: #334155;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.error-message {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+  100% { opacity: 0.5; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .glass-panel {
+    padding: 1.5rem;
+  }
+  .title {
+    font-size: 2rem;
+  }
+}
