@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { itemName } = await req.json();
+    const { itemName, prompt } = await req.json();
 
-    if (!itemName) {
-      return NextResponse.json({ error: "itemName is required" }, { status: 400 });
+    if (!itemName && !prompt) {
+      return NextResponse.json({ error: "itemName or prompt is required" }, { status: 400 });
     }
 
-    const promptText = `A single, minimalist, cute line-drawing icon of a ${itemName}, designed as a physical bullet journal rubber stamp. Thick, clean black outlines on a pure white background. Flat vector graphic style, entirely 2D, no shading, no intricate details, no gradients. Absolutely no square borders or frames drawn around the object. The ${itemName} should be centered with clear negative space.`;
+    const defaultPrompt = `A single, minimalist, cute line-drawing icon of a ${itemName}, designed as a physical bullet journal rubber stamp. Thick, clean black outlines on a pure white background. Flat vector graphic style, entirely 2D, no shading, no intricate details, no gradients. Absolutely no square borders or frames drawn around the object. The ${itemName} should be centered with clear negative space.`;
+    
+    const promptText = prompt ? prompt.replace(/\${itemName}/g, itemName || "") : defaultPrompt;
 
     const apiKey = process.env.VERTEX_AI_API_KEY;
 

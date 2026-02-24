@@ -34,7 +34,7 @@ body {
 /* Base Layout & Glassmorphism */
 .app-container {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   animation: fadeIn 0.8s ease-out;
 }
 
@@ -44,14 +44,19 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--panel-border);
   border-radius: 24px;
-  padding: 3rem;
+  padding: 2.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 /* Typography */
+.header-section {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
 .title {
   font-family: 'Outfit', sans-serif;
   font-size: 2.5rem;
@@ -66,24 +71,186 @@ body {
   color: var(--text-secondary);
   font-size: 1.1rem;
   font-weight: 400;
-  margin-top: -1.5rem;
+  margin-top: 0.5rem;
 }
 
-/* Input Form */
-.input-group {
+/* Prompt Management */
+.prompt-management {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  position: relative;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid var(--panel-border);
+}
+
+.prompt-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.toggle-editor-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.toggle-editor-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.prompt-shortcuts {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.prompt-shortcut-chip {
+  display: flex;
+  align-items: center;
+  background: var(--accent-color);
+  border-radius: 20px;
+  overflow: hidden;
+  font-size: 0.8rem;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.chip-load {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.chip-delete {
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  color: white;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chip-delete:hover {
+  background: rgba(255, 0, 0, 0.4);
+}
+
+.prompt-editor-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.prompt-textarea {
+  width: 100%;
+  min-height: 80px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 0.75rem;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  resize: vertical;
+  outline: none;
+}
+
+.prompt-textarea:focus {
+  border-color: var(--accent-color);
+}
+
+.save-prompt-btn {
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.save-prompt-btn:hover {
+  background: var(--accent-color);
+}
+
+.prompt-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Input Section */
+.input-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1px solid var(--panel-border);
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.divider {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.upload-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-color);
 }
 
 .stamp-input {
   flex-grow: 1;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--panel-border);
   border-radius: 12px;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   color: var(--text-primary);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
   outline: none;
@@ -208,7 +375,13 @@ body {
   font-weight: 600;
 }
 
-/* Color Picker */
+/* Color Picker & Shortcuts */
+.color-picker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .color-picker-wrapper {
   display: flex;
   align-items: center;
@@ -217,6 +390,92 @@ body {
   padding: 0.5rem;
   border-radius: 8px;
   border: 1px solid var(--panel-border);
+}
+
+.shortcuts-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.add-color-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-color-btn:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: rgba(59, 130, 246, 0.1);
+  transform: rotate(90deg);
+}
+
+.shortcut-wrapper {
+  position: relative;
+  width: 34px;
+  height: 34px;
+}
+
+.shortcut-color-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.shortcut-wrapper.active .shortcut-color-circle {
+  border-color: white;
+  box-shadow: 0 0 0 2px var(--accent-color);
+  transform: scale(1.1);
+}
+
+.shortcut-color-circle:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.delete-shortcut-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0.5);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 2;
+}
+
+.shortcut-wrapper:hover .delete-shortcut-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.shortcut-wrapper:hover .shortcut-color-circle {
+  filter: brightness(1.1);
 }
 
 .color-input {
@@ -279,34 +538,49 @@ body {
   cursor: not-allowed;
 }
 
-/* Export Button */
-.export-btn {
+/* Export Buttons */
+.export-group {
+  display: flex;
+  gap: 0.75rem;
   margin-top: auto;
+}
+
+.export-btn {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  background: linear-gradient(135deg, #10b981, #059669);
+  gap: 0.5rem;
   color: white;
   border: none;
-  padding: 1rem;
+  padding: 0.85rem;
   border-radius: 12px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Outfit', sans-serif;
 }
 
+.export-btn.svg {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.export-btn.png {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
 .export-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px #10b981;
+  filter: brightness(1.1);
+  box-shadow: 0 8px 15px -5px rgba(0, 0, 0, 0.4);
 }
 
 .export-btn:disabled {
   background: #334155;
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.5;
+  transform: none;
 }
 
 .error-message {
@@ -316,6 +590,78 @@ body {
   padding: 1rem;
   border-radius: 8px;
   font-size: 0.95rem;
+}
+
+/* History Section */
+.history-section {
+  margin-top: 1rem;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 1.5rem;
+}
+
+.history-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.history-item {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: white;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.history-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.history-item.active {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.history-item img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: block;
+  object-fit: cover;
+}
+
+.history-label {
+  display: block;
+  padding: 0.4rem;
+  font-size: 0.75rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.empty-history {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.9rem;
 }
 
 /* Animations */

@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { trace } from "@pwa-manifest/potrace";
 import sharp from "sharp";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const potrace = require("potrace");
+// Reach into the internal types of potrace to bypass Jimp
+const Potrace = potrace.Potrace;
+const Bitmap = require("potrace/lib/types/Bitmap");
 
 export async function POST(req: NextRequest) {
     try {
@@ -10,27 +16,51 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "imageBase64 is required" }, { status: 400 });
         }
 
-        // Decode the base64 image into a Buffer
         const imageBuffer = Buffer.from(imageBase64, 'base64');
 
-        // Use Sharp to read the dimensions and ensure it's a valid format for potrace
-        const metadata = await sharp(imageBuffer).metadata();
+        // Pre-process with Sharp:
+        // 1. Resize
+        // 2. Grayscale
+        // 3. Blur slightly to merge artifacts
+        // 4. Threshold to create binary mask
+        // 5. Use .raw() to get the actual pixel bytes!
+        const width = 800;
+        const height = 800;
+        
+        const { data, info } = await sharp(imageBuffer)
+            .resize(width, height, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 1 } })
+            .flatten({ background: { r: 255, g: 255, b: 255 } })
+            .greyscale()
+            .blur(0.5)
+            .threshold(180)
+            .raw() // CRITICAL: This ensures we get raw bytes, not a PNG/JPEG buffer
+            .toBuffer({ resolveWithObject: true });
 
-        if (!metadata.width || !metadata.height) {
-            throw new Error("Could not determine image dimensions.");
-        }
+        // Create a new Potrace instance
+        const potraceInstance = new Potrace({
+            turdSize: 40,      // Ignore smaller noise particles
+            optTolerance: 0.4,
+            threshold: 128     // We already thresholded with Sharp, so 128 is a safe middle ground
+        });
 
-        // We can use sharp to ensure high-contrast or standard formats before tracing if needed, 
-        // but passing the buffer directly mostly works.
-        const svgOutput = trace(imageBuffer, metadata.width, metadata.height);
+        // Manually build the Bitmap from sharp's raw grayscale data
+        const bitmap = new Bitmap(info.width, info.height);
+        bitmap.data.set(data);
 
-        // Some simple cleanup of the Potrace output if needed:
-        // E.g., removing fixed width/height so it scales properly in our canvas
-        const scalableSvgOptions = svgOutput
-            .replace(/width="[^"]+"/, 'width="100%"')
-            .replace(/height="[^"]+"/, 'height="100%"');
+        // Inject the bitmap into the instance
+        potraceInstance._luminanceData = bitmap;
+        potraceInstance._imageLoaded = true;
 
-        return NextResponse.json({ svg: scalableSvgOptions });
+        // Generate SVG
+        const svgOutput = potraceInstance.getSVG();
+
+        // Ensure the SVG is responsive
+        const responsiveSvg = svgOutput
+            .replace(/width="(\d+)"/, 'width="100%"')
+            .replace(/height="(\d+)"/, 'height="100%"')
+            .replace(/<svg/, '<svg preserveAspectRatio="xMidYMid meet"');
+
+        return NextResponse.json({ svg: responsiveSvg });
 
     } catch (error: any) {
         console.error("Error tracing image:", error);
